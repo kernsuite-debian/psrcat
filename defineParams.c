@@ -992,7 +992,7 @@ void defineBinary(pulsar *psr,int ip,int type)
 	      pb    = psr->param[ip2].shortVal*day2sec;
 	      asini = psr->param[ip1].shortVal*speedlight; 
 	      massfn = 2.0*M_PI*2.0*M_PI/gm*pow(asini,3)/pb/pb;
-	      
+
 	      if (type==1) /* MASSFN */
 		{
 		  psr->param[ip].shortVal = val = massfn;
@@ -1368,8 +1368,9 @@ int define_surveys(char surveynames[MAX_STRLEN][MAX_SURVEYS])
   strcpy(surveynames[27],"ar327");
   strcpy(surveynames[28],"gbncc");
   strcpy(surveynames[29],"ghrss");
+  strcpy(surveynames[30],"pks_superb");
   
-  survey_num=29;
+  survey_num=30;
   return survey_num;
 }
 
@@ -1552,8 +1553,8 @@ void defineParameters(paramtype *defParam)
   addParameter(defParam,"DECJD","%12.6f","DECJD","(deg)","Declination (J2000) (deg)",1,0);
   addParameter(defParam,"OSURVEY","%10.10s","OSURVEY"," ","Surveys that detected pulsar encoded as bits in integer",5,0);
   addParameter(defParam,"MASSFN","%7.4f","Mass fn","(Msun)","The pulsar Mass function (M_sun)",3,0);
-  addParameter(defParam,"MINMASS","%11.2f","Minimum  ","Mass (Msun)","Minimum companion mass assuming i=90deg and M_ns is 1.35Mo (M_sun)",3,0);
-  addParameter(defParam,"MEDMASS","%11.2f","Median  ","Mass (Msun)","Median companion mass assuming i=60deg (M_sun)",3,0);
+  addParameter(defParam,"MINMASS","%11.4f","Minimum  ","Mass (Msun)","Minimum companion mass assuming i=90deg and M_ns is 1.35Mo (M_sun)",3,0);
+  addParameter(defParam,"MEDMASS","%11.4f","Median  ","Mass (Msun)","Median companion mass assuming i=60deg (M_sun)",3,0);
   addParameter(defParam,"DMSINB","%10.2f","DM*sin(b)","(cm^-3 pc)","DM*sin(b) (cm**-3 pc)",4,0);
   addParameter(defParam,"GL","%9.3f","Gl","(deg)","Galactic Longitude (deg) ",1,0);
   addParameter(defParam,"GB","%9.3f","Gb","(deg)","Galactic Latitude (deg)",1,0);

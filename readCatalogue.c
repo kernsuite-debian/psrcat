@@ -329,7 +329,7 @@ int readCatalogue(pulsar *psr,linkedList *list,int *npsr,char name[MAX_PSR][MAX_
 		    }
 		  if (psr[*npsr].merged==1 && strcmp(paramLab,"UNITS")==0)
 		    {
-		      int eph = getParam("EPHEM",NULL);
+		      int eph = getParam("EPHVER",NULL);
 		      if (strcmp(psr[*npsr].param[ival].val,"TCB")==0)
 			{
 			  psr[*npsr].param[eph].shortVal = 5;
@@ -1101,6 +1101,39 @@ void alwaysDerive(pulsar *psr,paramtype *defparam)
 	psr->param[pb].set3 = 0;
       psr->param[pb].set1 = 1;  
       psr->param[pb].derived = 1;
+
+      /* Derive PBDOT from FB1 if available */
+      if (psr->param[fb1].set1 == 1 && psr->param[pbdot].set1 == 0)
+	{
+	  fb1val = psr->param[fb1].shortVal;
+	  pbdotval = psr->param[pbdot].shortVal = -1.0*pbval*pbval*fb1val;
+	  pcat_errZero[pbdot]=-1;
+	  pcat_refZero[pbdot]=-1;
+
+	  if (psr->param[fb1].set2==1)
+	    {
+	      sscanf(psr->param[fb1].err,"%d",&ierr_fb1);
+	      psr->param[pbdot].error_expand = sqrt(pow(pbval*pbval*ierr_fb1*psr->param[fb1].error_expand,2)+
+						 pow(2.0*pbval*pbval*pbval*fb1val*psr->param[fb0].error_expand*
+						     ierr_fb0,2));
+	      rnd8(pbdotval,psr->param[pbdot].error_expand,1,psr->param[pbdot].val,&lv,psr->param[pbdot].err,&le,msg);
+	      psr->param[pbdot].error_expand = errscale(psr->param[pbdot].val,psr->param[pbdot].err);
+	      psr->param[pbdot].set2 = 1;
+	      psr->param[pbdot].derived = 1;
+	    }
+	  else
+	    {
+	      psr->param[pbdot].error_expand = 0;
+	      sprintf(psr->param[pbdot].val,defparam[pbdot].shortStr,pbdotval);
+	      psr->param[pbdot].set2 = 0;
+	      psr->param[pbdot].derived = 1;
+	    }
+	  strcpy(psr->param[pbdot].ref,psr->param[fb1].ref);
+	  psr->param[pbdot].set1 = 1;  psr->param[pbdot].set3 = 1;
+	  psr->param[pbdot].derived = 1;
+	}
+
+
     }
   else if (psr->param[pb].set1 == 1 && psr->param[fb0].set1 != 1) /* Derive frequency from period */
     {
@@ -1135,7 +1168,6 @@ void alwaysDerive(pulsar *psr,paramtype *defparam)
 	  psr->param[fb0].set1 = 1; psr->param[fb0].set2 = 0; 
 	  psr->param[fb0].derived = 1;
 	}
-    
       /* Derive FB1 from PBDOT if available */
       if (psr->param[pbdot].set1 == 1)
 	{
@@ -1165,41 +1197,12 @@ void alwaysDerive(pulsar *psr,paramtype *defparam)
 	      psr->param[fb1].set1 = 1; psr->param[fb1].set2 = 0; psr->param[fb1].set3 = 1;
 	  psr->param[fb1].derived = 1;
 	    }
-	}      
-      /* Derive PBDOT from FB1 if available */
-      if (psr->param[fb1].set1 == 1 && psr->param[pbdot].set1 == 0)
-	{
-	  fb1val = psr->param[fb1].shortVal;
-	  pbdotval = psr->param[pbdot].shortVal = -1.0*pbval*pbval*fb1val;
-	  pcat_errZero[pbdot]=-1;
-	  pcat_refZero[pbdot]=-1;
-
-	  if (psr->param[fb1].set2==1)
-	    {
-	      sscanf(psr->param[fb1].err,"%d",&ierr_fb1);
-	      psr->param[pbdot].error_expand = sqrt(pow(pbval*pbval*ierr_fb1*psr->param[fb1].error_expand,2)+
-						 pow(2.0*pbval*pbval*pbval*fb1val*psr->param[fb0].error_expand*
-						     ierr_fb0,2));
-	      rnd8(pbdotval,psr->param[pbdot].error_expand,1,psr->param[pbdot].val,&lv,psr->param[pbdot].err,&le,msg);
-	      psr->param[pbdot].error_expand = errscale(psr->param[pbdot].val,psr->param[pbdot].err);
-	      psr->param[pbdot].set2 = 1;
-	      psr->param[pbdot].derived = 1;
-	    }
-	  else
-	    {
-	      psr->param[pbdot].error_expand = 0;
-	      sprintf(psr->param[pbdot].val,defparam[pbdot].shortStr,pbdotval);
-	      psr->param[pbdot].set2 = 0;
-	      psr->param[pbdot].derived = 1;
-	    }
-	  strcpy(psr->param[pbdot].ref,psr->param[fb1].ref);
-	  psr->param[pbdot].set1 = 1;  psr->param[pbdot].set3 = 1;
-	  psr->param[pbdot].derived = 1;
 	}
     }
   /* Check if PBDOT is set  */
   /* Derive PBDOT from FB1 if available */
-  if (psr->param[pbdot].set1 == 0 && psr->param[fb1].set1 == 1)
+      // GH: 20th May 2017: this code seems to be in twice
+      /*  if (psr->param[pbdot].set1 == 0 && psr->param[fb1].set1 == 1)
     {
       pbval = psr->param[pb].shortVal = 1.0/psr->param[fb0].shortVal;
       fb1val = psr->param[fb1].shortVal;
@@ -1234,7 +1237,7 @@ void alwaysDerive(pulsar *psr,paramtype *defparam)
 	}
       else
 	psr->param[pbdot].set3=0;
-    }
+	} */
   // End orbital period section
 
 
