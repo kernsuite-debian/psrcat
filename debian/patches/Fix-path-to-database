@@ -1,0 +1,24 @@
+Description: Fix path to database file
+
+--- psrcat-1.58.orig/parseParameters.c
++++ psrcat-1.58/parseParameters.c
+@@ -353,7 +353,7 @@ void version(char *dbFile)
+       path = getenv("PSRCAT_FILE");
+ 
+       if (path == NULL) /* Use the default database */
+-	strcpy(dbFile,"/pulsar/psr/runtime/psrcat/psrcat.db");
++	strcpy(dbFile,"/usr/share/psrcat/psrcat.db");
+       else
+ 	strcpy(dbFile,path);
+     }
+--- psrcat-1.58.orig/readCatalogue.c
++++ psrcat-1.58/readCatalogue.c
+@@ -39,7 +39,7 @@ int readCatalogue(pulsar *psr,linkedList
+ 	}
+       path = getenv("PSRCAT_FILE");
+       if (path == NULL) /* Use the default database */
+-	strcpy(dbFile,"/pulsar/psr/runtime/psrcat/psrcat.db");
++	strcpy(dbFile,"/usr/share/psrcat/psrcat.db");
+       else
+ 	strcpy(dbFile,path);
+     }
