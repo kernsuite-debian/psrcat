@@ -181,7 +181,7 @@ void derive_oSurvey(pulsar *psr,int ip,int type)
       strcpy(old_survey,psr->param[ip1].val);
       osurvey_val = encode_survey(old_survey,surveyNum,surveynames);
       psr->param[ip].set1 = 1; psr->param[ip].shortVal = (double)osurvey_val; 
-      sprintf(psr->param[ip].val,"%10.10o",osurvey_val);  
+      sprintf(psr->param[ip].val,"%12.12o",osurvey_val);  
       if (pcat_maxSize[ip] < strlen(psr->param[ip].val)) pcat_maxSize[ip]=strlen(psr->param[ip].val);              
     }
 }
@@ -1551,7 +1551,7 @@ void defineParameters(paramtype *defParam)
   addParameter(defParam,"RADDIST","%8.2f","RAD.","DISTANCE","Radial distance from given coordinate (degrees)",4,0);
   addParameter(defParam,"RAJD","%12.6f","RAJD","(deg)","Right Ascension (J2000) (deg)",1,0);
   addParameter(defParam,"DECJD","%12.6f","DECJD","(deg)","Declination (J2000) (deg)",1,0);
-  addParameter(defParam,"OSURVEY","%10.10s","OSURVEY"," ","Surveys that detected pulsar encoded as bits in integer",5,0);
+  addParameter(defParam,"OSURVEY","%12.12s","OSURVEY"," ","Surveys that detected pulsar encoded as bits in integer",5,0);
   addParameter(defParam,"MASSFN","%7.4f","Mass fn","(Msun)","The pulsar Mass function (M_sun)",3,0);
   addParameter(defParam,"MINMASS","%11.4f","Minimum  ","Mass (Msun)","Minimum companion mass assuming i=90deg and M_ns is 1.35Mo (M_sun)",3,0);
   addParameter(defParam,"MEDMASS","%11.4f","Median  ","Mass (Msun)","Median companion mass assuming i=60deg (M_sun)",3,0);
