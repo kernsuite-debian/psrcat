@@ -1,3 +1,9 @@
+psrcat (1.58-1kern2) bionic; urgency=medium
+
+  * Make new release for bionic
+
+ -- KERN packaging <packaging@kernsuite.info>  Fri, 25 May 2018 11:51:44 +0000
+
 psrcat (1.58-1kern1) xenial; urgency=medium
 
   * New upstream version 1.58
